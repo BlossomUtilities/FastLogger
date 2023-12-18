@@ -1,3 +1,8 @@
+#pragma once
+
+#ifndef FASTLOGGER_1_LOGGER_HPP
+#define FASTLOGGER_1_LOGGER_HPP
+
 #include <iostream>
 #include <string>
 #include <ctime>
@@ -189,3 +194,5 @@ namespace Blossom::Logging {
         }
     };
 }
+
+#endif // FASTLOGGER_1_LOGGER_HPP
