@@ -180,7 +180,7 @@ namespace Blossom::Logging {
 
     class DefaultLogger {
     public:
-        static inline Logger logger{"main"};
+        static inline Logger* logger{nullptr};
     };
 }
 
