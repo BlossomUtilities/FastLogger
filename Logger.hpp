@@ -15,7 +15,7 @@
 #endif
 
 #define FASTLOGGER_LOGGING_FUNCTION(name, level, requiresDebugging) \
-    void name(const std::string &message) {                         \
+    void name(const std::string& message) {                         \
         if (requiresDebugging && !debuggingEnabled) return;         \
                                                                     \
         println(message, LogLevel::level);                          \
@@ -37,22 +37,14 @@ namespace Blossom::Logging {
     private:
         static std::string logLevelToString(LogLevel level) {
             switch (level) {
-                case LogLevel::TRACE:
-                    return "TRACE";
-                case LogLevel::DEBUG:
-                    return "DEBUG";
-                case LogLevel::INFO:
-                    return "INFO";
-                case LogLevel::NOTICE:
-                    return "NOTICE";
-                case LogLevel::WARNING:
-                    return "WARNING";
-                case LogLevel::ERROR:
-                    return "ERROR";
-                case LogLevel::CRITICAL:
-                    return "CRITICAL";
-                case LogLevel::CRASH:
-                    return "CRASH";
+                case LogLevel::TRACE:    return "TRACE";
+                case LogLevel::DEBUG:    return "DEBUG";
+                case LogLevel::INFO:     return "INFO";
+                case LogLevel::NOTICE:   return "NOTICE";
+                case LogLevel::WARNING:  return "WARNING";
+                case LogLevel::ERROR:    return "ERROR";
+                case LogLevel::CRITICAL: return "CRITICAL";
+                case LogLevel::CRASH:    return "CRASH";
             }
         }
 
@@ -76,8 +68,7 @@ namespace Blossom::Logging {
 
         Logger(std::string loggerName, std::string format, bool debuggingEnabled) : defaultName(std::move(loggerName)),
                                                                                     format(std::move(format)),
-                                                                                    debuggingEnabled(
-                                                                                            debuggingEnabled) {}
+                                                                                    debuggingEnabled(debuggingEnabled) {}
 
         bool debuggingEnabled = true;
 
@@ -144,8 +135,7 @@ namespace Blossom::Logging {
                     SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_BLUE); // Cyan
                     break;
                 case LogLevel::WARNING:
-                    SetConsoleTextAttribute(hConsole,
-                                            FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY); // Yellow
+                    SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY); // Yellow
                     break;
                 case LogLevel::ERROR:
                 case LogLevel::CRITICAL:
