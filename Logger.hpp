@@ -14,6 +14,13 @@
 #undef ERROR
 #endif
 
+#define FASTLOGGER_LOGGING_FUNCTION(name, level, requiresDebugging) \
+    void name(const std::string &message) {                         \
+        if (requiresDebugging && !debuggingEnabled) return;         \
+                                                                    \
+        println(message, LogLevel::level);                          \
+    }                                                               \
+
 namespace Blossom::Logging {
     enum class LogLevel {
         TRACE,
@@ -30,14 +37,22 @@ namespace Blossom::Logging {
     private:
         static std::string logLevelToString(LogLevel level) {
             switch (level) {
-                case LogLevel::TRACE:    return "TRACE";
-                case LogLevel::DEBUG:    return "DEBUG";
-                case LogLevel::INFO:     return "INFO";
-                case LogLevel::NOTICE:   return "NOTICE";
-                case LogLevel::WARNING:  return "WARNING";
-                case LogLevel::ERROR:    return "ERROR";
-                case LogLevel::CRITICAL: return "CRITICAL";
-                case LogLevel::CRASH:    return "CRASH";
+                case LogLevel::TRACE:
+                    return "TRACE";
+                case LogLevel::DEBUG:
+                    return "DEBUG";
+                case LogLevel::INFO:
+                    return "INFO";
+                case LogLevel::NOTICE:
+                    return "NOTICE";
+                case LogLevel::WARNING:
+                    return "WARNING";
+                case LogLevel::ERROR:
+                    return "ERROR";
+                case LogLevel::CRITICAL:
+                    return "CRITICAL";
+                case LogLevel::CRASH:
+                    return "CRASH";
             }
         }
 
@@ -53,15 +68,20 @@ namespace Blossom::Logging {
     public:
         explicit Logger(std::string loggerName) : defaultName(std::move(loggerName)) {}
 
-        Logger(std::string loggerName, bool debuggingEnabled) : defaultName(std::move(loggerName)), debuggingEnabled(debuggingEnabled) {}
+        Logger(std::string loggerName, bool debuggingEnabled) : defaultName(std::move(loggerName)),
+                                                                debuggingEnabled(debuggingEnabled) {}
 
-        Logger(std::string loggerName, std::string format) : defaultName(std::move(loggerName)), format(std::move(format)) {}
+        Logger(std::string loggerName, std::string format) : defaultName(std::move(loggerName)),
+                                                             format(std::move(format)) {}
 
-        Logger(std::string loggerName, std::string format, bool debuggingEnabled) : defaultName(std::move(loggerName)), format(std::move(format)), debuggingEnabled(debuggingEnabled) {}
+        Logger(std::string loggerName, std::string format, bool debuggingEnabled) : defaultName(std::move(loggerName)),
+                                                                                    format(std::move(format)),
+                                                                                    debuggingEnabled(
+                                                                                            debuggingEnabled) {}
 
         bool debuggingEnabled = true;
 
-        void println(const std::string& message, LogLevel level) {
+        void println(const std::string &message, LogLevel level) {
             const std::string formattedMessage = replacePlaceholders(message, level);
 
             printWithColor(formattedMessage, level);
@@ -69,47 +89,20 @@ namespace Blossom::Logging {
             std::cout << '\n';
         }
 
-        void trace(const std::string& message) {
-            if (debuggingEnabled) {
-                println(message, LogLevel::TRACE);
-            }
-        }
-
-        void debug(const std::string& message) {
-            if (debuggingEnabled) {
-                println(message, LogLevel::DEBUG);
-            }
-        }
-
-        void info(const std::string& message) {
-            println(message, LogLevel::INFO);
-        }
-
-        void notice(const std::string& message) {
-            println(message, LogLevel::NOTICE);
-        }
-
-        void warning(const std::string& message) {
-            println(message, LogLevel::WARNING);
-        }
-
-        void error(const std::string& message) {
-            println(message, LogLevel::ERROR);
-        }
-
-        void crash(const std::string& message) {
-            println(message, LogLevel::CRASH);
-        }
-
-        void critical(const std::string& message) {
-            println(message, LogLevel::CRITICAL);
-        }
+        FASTLOGGER_LOGGING_FUNCTION(trace, TRACE, true);
+        FASTLOGGER_LOGGING_FUNCTION(debug, DEBUG, true);
+        FASTLOGGER_LOGGING_FUNCTION(info, INFO, false);
+        FASTLOGGER_LOGGING_FUNCTION(notice, NOTICE, false);
+        FASTLOGGER_LOGGING_FUNCTION(warning, WARNING, false);
+        FASTLOGGER_LOGGING_FUNCTION(error, ERROR, false);
+        FASTLOGGER_LOGGING_FUNCTION(crash, CRASH, false);
+        FASTLOGGER_LOGGING_FUNCTION(critical, CRITICAL, false);
 
     private:
         const std::string defaultName;
         const std::string format = "%date% %level% %loggerName% | %message%";
 
-        [[nodiscard]] std::string replacePlaceholders(const std::string& message, LogLevel level) const {
+        [[nodiscard]] std::string replacePlaceholders(const std::string &message, LogLevel level) const {
             std::string formattedMessage = format;
 
             formattedMessage = replace(formattedMessage, "%message%", message);
@@ -120,7 +113,7 @@ namespace Blossom::Logging {
             return formattedMessage;
         }
 
-        static std::string replace(const std::string& inputString, const std::string& from, const std::string& to) {
+        static std::string replace(const std::string &inputString, const std::string &from, const std::string &to) {
             size_t startPos = inputString.find(from);
 
             if (startPos != std::string::npos) {
@@ -130,7 +123,7 @@ namespace Blossom::Logging {
             }
         }
 
-        static void printWithColor(const std::string& message, LogLevel level) {
+        static void printWithColor(const std::string &message, LogLevel level) {
 #ifdef _WIN32
             HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
             CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
@@ -151,7 +144,8 @@ namespace Blossom::Logging {
                     SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_BLUE); // Cyan
                     break;
                 case LogLevel::WARNING:
-                    SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY); // Yellow
+                    SetConsoleTextAttribute(hConsole,
+                                            FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY); // Yellow
                     break;
                 case LogLevel::ERROR:
                 case LogLevel::CRITICAL:
@@ -192,6 +186,11 @@ namespace Blossom::Logging {
             }
 #endif
         }
+    };
+
+    class DefaultLogger {
+    public:
+        Logger logger{"Main"};
     };
 }
 
