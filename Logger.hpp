@@ -48,7 +48,13 @@ namespace Blossom::Logging {
     public:
         explicit Logger(std::string loggerName) : defaultName(std::move(loggerName)) {}
 
+        Logger(std::string loggerName, bool debuggingEnabled) : defaultName(std::move(loggerName)), debuggingEnabled(debuggingEnabled) {}
+
         Logger(std::string loggerName, std::string format) : defaultName(std::move(loggerName)), format(std::move(format)) {}
+
+        Logger(std::string loggerName, std::string format, bool debuggingEnabled) : defaultName(std::move(loggerName)), format(std::move(format)), debuggingEnabled(debuggingEnabled) {}
+
+        bool debuggingEnabled = true;
 
         void println(const std::string& message, LogLevel level) {
             const std::string formattedMessage = replacePlaceholders(message, level);
@@ -59,11 +65,15 @@ namespace Blossom::Logging {
         }
 
         void trace(const std::string& message) {
-            println(message, LogLevel::TRACE);
+            if (debuggingEnabled) {
+                println(message, LogLevel::TRACE);
+            }
         }
 
         void debug(const std::string& message) {
-            println(message, LogLevel::DEBUG);
+            if (debuggingEnabled) {
+                println(message, LogLevel::DEBUG);
+            }
         }
 
         void info(const std::string& message) {
