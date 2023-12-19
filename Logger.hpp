@@ -109,9 +109,9 @@ namespace Blossom::Logging {
 
             if (startPos != std::string::npos) {
                 return inputString.substr(0, startPos) + to + inputString.substr(startPos + from.length());
-            } else {
-                return inputString;
             }
+
+            return inputString;
         }
 
         static void printWithColor(const std::string &message, LogLevel level) {
