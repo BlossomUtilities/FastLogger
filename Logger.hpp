@@ -139,10 +139,10 @@ namespace Blossom::Logging {
                     break;
                 case LogLevel::ERROR:
                 case LogLevel::CRITICAL:
-                    SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY); // Intense Red
+                    SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY); // Intense red
                     break;
                 case LogLevel::CRASH:
-                    SetConsoleTextAttribute(hConsole, BACKGROUND_RED | FOREGROUND_INTENSITY); // White on Red background
+                    SetConsoleTextAttribute(hConsole, BACKGROUND_RED | FOREGROUND_INTENSITY); // White on red background
                     break;
             }
 
@@ -168,10 +168,10 @@ namespace Blossom::Logging {
                     std::cout << "\033[31m" << message << "\033[0m"; // Red
                     break;
                 case LogLevel::CRITICAL:
-                    std::cout << "\033[1;31m" << message << "\033[0m"; // Bold Red
+                    std::cout << "\033[1;31m" << message << "\033[0m"; // Bold red
                     break;
                 case LogLevel::CRASH:
-                    std::cout << "\033[1;41;97m" << message << "\033[0m"; // Bold Red background
+                    std::cout << "\033[1;41;97m" << message << "\033[0m"; // Bold red background
                     break;
             }
 #endif
