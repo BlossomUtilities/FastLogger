@@ -46,6 +46,8 @@ namespace Blossom::Logging {
                 case LogLevel::CRITICAL: return "CRITICAL";
                 case LogLevel::CRASH:    return "CRASH";
             }
+            
+            return "UNKNOWN";
         }
 
         static std::string getCurrentTime() {
